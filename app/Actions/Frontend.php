@@ -18,10 +18,10 @@ class Frontend
         ];
 
         foreach ($renames as $from => $to) {
-            $from = $path . '/' . sprintf($from, strtolower($stack));
-            $to = $path . '/' . sprintf($to, strtolower($stack));
+            $from = $path.'/'.sprintf($from, strtolower($stack));
+            $to = $path.'/'.sprintf($to, strtolower($stack));
 
-            if (!File::exists($from)) {
+            if (! File::exists($from)) {
                 throw new RuntimeException("File {$from} does not exist. Please check the template.");
             }
 
@@ -31,7 +31,7 @@ class Frontend
 
     public function cleanup(string $path): void
     {
-        File::deleteDirectory($path . '/resources/js-vue');
-        File::deleteDirectory($path . '/resources/js-react');
+        File::deleteDirectory($path.'/resources/js-vue');
+        File::deleteDirectory($path.'/resources/js-react');
     }
 }
