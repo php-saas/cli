@@ -1,7 +1,7 @@
 {
     "name": "php-saas/cli",
     "description": "The command line interface for the PHP-SaaS project",
-    "keywords": ["framework", "laravel", "php-saas", "cli", "saas", "starter-kit"],
+    "keywords": ["php", "laravel", "php-saas", "cli", "saas", "starter-kit"],
     "homepage": "https://php-saas.com",
     "type": "project",
     "license": "MIT",
