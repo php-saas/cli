@@ -15,35 +15,27 @@
     ],
     "require": {
         "php": "^8.2",
-        "laravel-zero/framework": "^12.0"
-    },
-    "require-dev": {
-        "laravel/pint": "^1.22",
-        "mockery/mockery": "^1.6.12",
-        "pestphp/pest": "^3.8.2"
+        "illuminate/filesystem": "^10.20|^11.0|^12.0",
+        "illuminate/support": "^10.20|^11.0|^12.0",
+        "laravel/prompts": "^0.1.18|^0.2.0|^0.3.0",
+        "symfony/console": "^6.2|^7.0",
+        "symfony/process": "^6.2|^7.0"
     },
     "autoload": {
         "psr-4": {
-            "App\\": "app/"
+            "PHPSaaS\\Cli\\": "src/"
         },
         "files": [
-            "app/Support/helpers.php"
+            "src/Support/helpers.php"
         ]
     },
-    "autoload-dev": {
-        "psr-4": {
-            "Tests\\": "tests/"
-        }
-    },
     "config": {
-        "preferred-install": "dist",
-        "sort-packages": true,
-        "optimize-autoloader": true,
-        "allow-plugins": {
-            "pestphp/pest-plugin": true
-        }
+        "sort-packages": true
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "bin": ["php-saas"]
+    "bin": ["php-saas"],
+    "require-dev": {
+        "laravel/pint": "^1.24"
+    }
 }

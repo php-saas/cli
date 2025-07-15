@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Actions;
+namespace PHPSaaS\Cli\Traits;
 
-use Illuminate\Support\Facades\File;
 use RuntimeException;
 
-class Frontend
+trait Frontend
 {
-    public function setup(string $path, string $stack): void
+    protected function setupFrontend(): void
     {
-        if ($stack === 'vue') {
+        if ($this->frontend === 'vue') {
             throw new RuntimeException('Vue stack is not supported yet.');
         }
 
@@ -22,20 +21,20 @@ class Frontend
         ];
 
         foreach ($renames as $from => $to) {
-            $from = $path.'/'.sprintf($from, strtolower($stack));
-            $to = $path.'/'.sprintf($to, strtolower($stack));
+            $from = $this->path.'/'.sprintf($from, strtolower($this->frontend));
+            $to = $this->path.'/'.sprintf($to, strtolower($this->frontend));
 
-            if (! File::exists($from)) {
+            if (! $this->fileSystem->exists($from)) {
                 throw new RuntimeException("File {$from} does not exist. Please check the template.");
             }
 
-            File::move($from, $to);
+            $this->fileSystem->move($from, $to);
         }
     }
 
-    public function cleanup(string $path): void
+    protected function cleanupFrontend(): void
     {
-        File::deleteDirectory($path.'/resources/js-vue');
-        File::deleteDirectory($path.'/resources/js-react');
+        $this->fileSystem->deleteDirectory($this->path.'/resources/js-vue');
+        $this->fileSystem->deleteDirectory($this->path.'/resources/js-react');
     }
 }

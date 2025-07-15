@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Actions;
+namespace PHPSaaS\Cli\Traits;
 
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use RuntimeException;
 
-class Projects
+trait Projects
 {
-    protected array $filesToDelete = [
+    protected array $projectsFilesToDelete = [
         'app/Enums/ProjectRole.php',
         'app/Http/Resources/ProjectResource.php',
         'app/Http/Resources/ProjectUserResource.php',
@@ -27,14 +27,14 @@ class Projects
         'resources/emails/project-invitation.blade.php',
     ];
 
-    protected array $directoriesToDelete = [
+    protected array $projectsDirectoriesToDelete = [
         'app/Actions/Project',
         'app/Http/Controllers/Project',
         'tests/Feature/Project',
         'resources/js/pages/projects',
     ];
 
-    protected array $filesToRemoveBlocks = [
+    protected array $projectsFilesToRemoveBlocks = [
         'bootstrap/providers.php',
         'app/Models/User.php',
         'resources/js/components/nav-main.tsx',
@@ -46,43 +46,32 @@ class Projects
         'routes/settings.php',
     ];
 
-    protected array $filesToRename = [
-
-    ];
-
-    protected array $directoriesToRename = [
-
-    ];
-
-    protected array $filesToReplaceNames = [
-
-    ];
-
-    /**
-     * @throws FileNotFoundException
-     */
-    public function setup(string $path, string $name): void
+    protected function setupProjects(): void
     {
-        if ($name === 'projects') {
+        if ($this->projects === 'projects') {
             return;
         }
 
-        if ($name === 'none') {
-            delete_files($path, $this->filesToDelete);
-            delete_directories($path, $this->directoriesToDelete);
-            remove_blocks($path, $this->filesToRemoveBlocks, 'projects');
+        if ($this->projects === 'none') {
+            foreach ($this->projectsFilesToDelete as $file) {
+                $this->fileSystem->delete($this->path.'/'.$file);
+            }
+            foreach ($this->projectsDirectoriesToDelete as $directory) {
+                if (! $this->fileSystem->isDirectory($directory)) {
+                    continue;
+                }
+                $this->fileSystem->deleteDirectory($this->path.'/'.$directory);
+            }
+            $this->removeBlocks($this->projectsFilesToRemoveBlocks, 'projects');
 
             return;
         }
 
-        throw new \RuntimeException("$name is not supported yet!");
+        throw new RuntimeException("$this->projects is not supported yet!");
     }
 
-    /**
-     * @throws FileNotFoundException
-     */
-    public function cleanup(string $path): void
+    protected function cleanupProjects(): void
     {
-        remove_block_tags($path, $this->filesToRemoveBlocks, 'projects');
+        $this->removeBlockTags($this->projectsFilesToRemoveBlocks, 'projects');
     }
 }
