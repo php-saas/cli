@@ -5,7 +5,7 @@ The command line interface for the PHP-SaaS project.
 ## Installation
 
 ```bash
-composer global require php-saas/cli --with-dependencies
+composer global require php-saas/cli
 ```
 
 ## Usage
