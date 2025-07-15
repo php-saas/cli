@@ -107,6 +107,8 @@ class NewCommand extends Command
             "{$this->path}/vendor/bin/pint --parallel",
         ]);
 
+        $this->setupNpm();
+
         return 0;
     }
 
