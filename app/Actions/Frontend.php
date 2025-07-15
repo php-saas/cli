@@ -9,6 +9,10 @@ class Frontend
 {
     public function setup(string $path, string $stack): void
     {
+        if ($stack === 'vue') {
+            throw new RuntimeException('Vue stack is not supported yet.');
+        }
+
         $renames = [
             'resources/js-%s' => 'resources/js',
             'vite-%s.config.ts' => 'vite.config.ts',

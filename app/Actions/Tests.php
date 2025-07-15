@@ -31,10 +31,10 @@ class Tests
         File::deleteDirectory($path.'/tests-phpunit');
 
         switch ($stack) {
-            case 'Pest':
+            case 'pest':
                 exec('composer remove phpunit/phpunit --no-interaction --working-dir='.$path);
                 break;
-            case 'PHPUnit':
+            case 'phpunit':
                 exec('composer remove pestphp/pest --no-interaction --working-dir='.$path);
                 break;
             default:

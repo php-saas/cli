@@ -4,14 +4,16 @@ namespace App\Commands;
 
 use App\Actions\APITokens;
 use App\Actions\Application;
+use App\Actions\Billing;
 use App\Actions\Frontend;
+use App\Actions\Npm;
+use App\Actions\Projects;
 use App\Actions\Tests;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\File;
 
 use function Laravel\Prompts\select;
-use function Termwind\render;
 
 class NewCommand extends Command
 {
@@ -31,18 +33,19 @@ class NewCommand extends Command
 
     protected string $apiTokens = '';
 
+    protected string $npm = '';
+
     /**
      * @throws FileNotFoundException
      */
     public function handle(): void
     {
-        render(<<<'HTML'
-         ▗▄▄▖ ▗▖ ▗▖▗▄▄▖     ▗▄▄▖ ▗▄▖  ▗▄▖  ▗▄▄▖
-         ▐▌ ▐▌▐▌ ▐▌▐▌ ▐▌   ▐▌   ▐▌ ▐▌▐▌ ▐▌▐▌
-         ▐▛▀▘ ▐▛▀▜▌▐▛▀▘     ▝▀▚▖▐▛▀▜▌▐▛▀▜▌ ▝▀▚▖
-         ▐▌   ▐▌ ▐▌▐▌      ▗▄▄▞▘▐▌ ▐▌▐▌ ▐▌▗▄▄▞▘
-        HTML
-        );
+        $this->getOutput()->write('<fg=bright-magenta>
+ ▗▄▄▖ ▗▖ ▗▖▗▄▄▖     ▗▄▄▖ ▗▄▖  ▗▄▖  ▗▄▄▖
+ ▐▌ ▐▌▐▌ ▐▌▐▌ ▐▌   ▐▌   ▐▌ ▐▌▐▌ ▐▌▐▌
+ ▐▛▀▘ ▐▛▀▜▌▐▛▀▘     ▝▀▚▖▐▛▀▜▌▐▛▀▜▌ ▝▀▚▖
+ ▐▌   ▐▌ ▐▌▐▌      ▗▄▄▞▘▐▌ ▐▌▐▌ ▐▌▗▄▄▞▘
+        </>'.PHP_EOL);
 
         $name = $this->argument('name');
 
@@ -65,52 +68,64 @@ class NewCommand extends Command
         app(Application::class)->setup($this->path, $this->argument('name'));
         app(Frontend::class)->setup($this->path, $this->frontend);
         app(Tests::class)->setup($this->path, $this->tests);
-        app(APITokens::class)->setup($this->path, $this->frontend, $this->apiTokens === 'Yes');
+        app(APITokens::class)->setup($this->path, $this->apiTokens === 'yes');
+        app(Billing::class)->setup($this->path, $this->billing);
+        app(Projects::class)->setup($this->path, $this->projects);
+        app(Npm::class)->setup($this->path, $this->npm === 'yes');
     }
 
     private function collectInputs(): void
     {
-        $this->frontend = 'React';
-        $this->tests = 'PHPUnit';
-        $this->projects = 'Projects';
-        $this->billing = 'Cashier Paddle';
-        $this->apiTokens = 'No';
-
-        return;
         $this->frontend = select('Which frontend stack would you like to use?', [
-            'React',
-            'Vue',
-        ]);
+            'react' => 'React',
+            'vue' => 'Vue (coming soon)',
+        ], hint: 'The frontend stacks are integrated with Inertia.js');
+
         $this->tests = select('Which testing framework would you like to use?', [
-            'PHPUnit',
-            'Pest',
+            'phpunit' => 'PHPUnit',
+            'pest' => 'Pest (coming soon)',
         ]);
+
         $this->projects = select('Do you want Projects, Organizations or Teams?', [
-            'Projects',
-            'Organizations',
-            'Teams',
-            'None',
-        ]);
+            'projects' => 'Projects',
+            'organizations' => 'Organizations (coming soon)',
+            'teams' => 'Teams (coming soon)',
+            'none' => 'None',
+        ], default: 'projects');
+
         $this->billing = select('Which payment provider do you want for Billing?', [
-            'Cashier Paddle',
-            'Cashier Stripe',
-            'None',
+            'paddle' => 'Cashier Paddle',
+            'stripe' => 'Cashier Stripe (coming soon)',
+            'none' => 'None',
         ]);
+
         $this->apiTokens = select('Do you want to include API tokens?', [
-            'Yes',
-            'No',
-        ]);
+            'yes' => 'Yes',
+            'no' => 'No',
+        ], default: 'yes');
+
+        $this->npm = select('Do you want to run npm install?', [
+            'yes' => 'Yes',
+            'no' => 'No',
+        ], default: 'yes');
     }
 
+    /**
+     * @throws FileNotFoundException
+     */
     private function cleanup(): void
     {
         app(Application::class)->cleanup($this->path);
         app(Frontend::class)->cleanup($this->path);
         app(Tests::class)->cleanup($this->path, $this->tests);
-        app(APITokens::class)->cleanup($this->path, $this->apiTokens === 'Yes');
+        app(APITokens::class)->cleanup($this->path, $this->apiTokens === 'yes');
+        app(Billing::class)->cleanup($this->path, $this->billing);
+        app(Projects::class)->cleanup($this->path);
 
         File::delete($this->path.'/use.sh');
 
+        exec("cd $this->path && php artisan key:generate");
+        exec("cd $this->path && php artisan migrate --force");
         exec($this->path.'/vendor/bin/pint --parallel');
     }
 }

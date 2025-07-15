@@ -3,8 +3,6 @@
     "description": "The command line interface for the PHP-SaaS project",
     "keywords": ["php", "laravel", "php-saas", "cli", "saas", "starter-kit"],
     "homepage": "https://php-saas.com",
-    "type": "project",
-    "license": "MIT",
     "support": {
         "issues": "https://github.com/php-saas/cli/issues",
         "source": "https://github.com/php-saas/cli"
@@ -47,7 +45,7 @@
             "pestphp/pest-plugin": true
         }
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true,
     "bin": ["php-saas"]
 }

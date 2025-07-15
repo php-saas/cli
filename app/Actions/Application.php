@@ -16,8 +16,6 @@ class Application
         }
 
         exec("composer install --working-dir={$path}");
-
-        exec("cd {$path} && php artisan key:generate");
     }
 
     public function clone(string $directory): void
