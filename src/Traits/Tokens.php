@@ -32,7 +32,7 @@ trait Tokens
      */
     protected function setupTokens(): void
     {
-        if ($this->tokens === 'no') {
+        if ($this->tokens === 'yes') {
             return;
         }
 
@@ -57,7 +57,7 @@ trait Tokens
     {
         $this->removeBlockTags($this->tokensFilesToRemoveBlocks, 'tokens');
 
-        if ($this->tokens === 'no') {
+        if ($this->tokens === 'yes') {
             return;
         }
 
