@@ -15,8 +15,10 @@ trait Application
         $repositoryUrl = 'git@github.com:php-saas/php-saas.git';
 
         $this->runCommands([
-            "git clone {$repositoryUrl} {$this->path}",
+            "git clone {$repositoryUrl} {$this->tmpPath}",
         ]);
+
+        $this->fileSystem->moveDirectory($this->tmpPath.'/laravel', $this->path);
 
         if (! file_exists($this->path.'/.env')) {
             $this->fileSystem->copy($this->path.'/.env.example', $this->path.'/.env');
@@ -30,9 +32,6 @@ trait Application
 
     protected function cleanupApplication(): void
     {
-        $this->fileSystem->deleteDirectory($this->path.'/.github');
-        $this->fileSystem->deleteDirectory($this->path.'/.git');
-        $this->fileSystem->delete($this->path.'/.gitignore');
-        $this->fileSystem->move($this->path.'/.gitignore.final', $this->path.'/.gitignore');
+        //
     }
 }

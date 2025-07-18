@@ -34,6 +34,8 @@ class NewCommand extends Command
 
     protected string $name = '';
 
+    protected string $tmpPath = '';
+
     protected string $path = '';
 
     protected string $frontend = '';
@@ -79,6 +81,8 @@ class NewCommand extends Command
         $this->name = $input->getArgument('name');
 
         $this->path = getcwd().'/'.$this->name;
+
+        $this->tmpPath = sys_get_temp_dir().'/php-saas-'.str_replace(' ', '-', strtolower($this->name)).'-'.time();
 
         $this->collectInputs();
 
