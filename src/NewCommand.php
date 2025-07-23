@@ -120,7 +120,7 @@ class NewCommand extends Command
     {
         $this->frontend = select('Which frontend stack would you like to use?', [
             'react' => 'React',
-            'vue' => 'Vue (coming soon)',
+            'vue' => 'Vue',
         ], hint: 'The frontend stacks are integrated with Inertia.js');
 
         $this->tests = select('Which testing framework would you like to use?', [

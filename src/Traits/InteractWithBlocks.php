@@ -81,4 +81,34 @@ trait InteractWithBlocks
 
         return $tagsRemoved;
     }
+
+    protected function replaceBlocks(array $files, string $block, string $replacement): void
+    {
+        foreach ($files as $file) {
+            $filePath = $this->path.'/'.$file;
+
+            if (! file_exists($filePath)) {
+                continue;
+            }
+
+            $content = file_get_contents($filePath);
+
+            $patterns = [
+                // PHP comments
+                "/\/\/ <php-saas:{$block}>.*?\/\/ <\/php-saas:{$block}>\n?/s",
+                // JSX/TSX comments
+                "/\{\s*\/\*<php-saas:{$block}>\*\/\s*\}.*?\{\s*\/\*<\/php-saas:{$block}>\*\/\s*\}\n?/s",
+                // HTML comments
+                "/<!--<php-saas:{$block}>-->.*?<!--<\/php-saas:{$block}>-->\n?/s",
+                // .env comments
+                "/# <php-saas:{$block}>.*?# <\/php-saas:{$block}>\n?/s",
+            ];
+
+            $newContent = preg_replace($patterns, $replacement, $content);
+
+            if ($newContent !== $content) {
+                file_put_contents($filePath, $newContent);
+            }
+        }
+    }
 }
