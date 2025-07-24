@@ -125,7 +125,7 @@ class NewCommand extends Command
 
         $this->tests = select('Which testing framework would you like to use?', [
             'phpunit' => 'PHPUnit',
-            'pest' => 'Pest (coming soon)',
+            'pest' => 'Pest',
         ]);
 
         $this->projects = select('Do you want Projects, Organizations or Teams?', [
